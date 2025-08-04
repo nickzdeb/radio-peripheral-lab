@@ -1,0 +1,36 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Wed Jul 30 20:02:56 2025
+# Process ID         : 291164
+# Current directory  : /home/nzdeb/Desktop/JHU/EN.525.742/Week_10/radio_periph_lab
+# Command line       : vivado
+# Log file           : /home/nzdeb/Desktop/JHU/EN.525.742/Week_10/radio_periph_lab/vivado.log
+# Journal file       : /home/nzdeb/Desktop/JHU/EN.525.742/Week_10/radio_periph_lab/vivado.jou
+# Running On         : ufuntu
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 22.04.5 LTS
+# Processor Detail   : Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz
+# CPU Frequency      : 3800.058 MHz
+# CPU Physical cores : 6
+# CPU Logical cores  : 6
+# Host memory        : 50359 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 52506 MB
+# Available Virtual  : 42001 MB
+#-----------------------------------------------------------
+start_gui
+open_project /home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.xpr
+update_compile_order -fileset sources_1
+open_bd_design {/home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.srcs/sources_1/bd/proc_system/proc_system.bd}
+set_property location {6.5 2426 446} [get_bd_cells block_design_ILA]
+set_property location {8.5 3456 -1} [get_bd_cells filter_1_fir_compiler]
+set_property location {9.5 4002 -43} [get_bd_cells filter_2_fir_compiler]
+set_property location {10 3997 23} [get_bd_cells filter_2_fir_compiler]
+set_property location {8.5 3266 -97} [get_bd_cells filter_1_fir_compiler]
+set_property location {9.5 3742 -84} [get_bd_cells filter_2_fir_compiler]
+set_property location {7 2375 -155} [get_bd_cells cmpy_0]
+set_property location {7.5 2915 -119} [get_bd_cells filter_1_fir_compiler]
+set_property location {8.5 3323 -123} [get_bd_cells filter_2_fir_compiler]

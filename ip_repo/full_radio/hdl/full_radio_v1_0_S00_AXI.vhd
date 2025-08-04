@@ -18,6 +18,7 @@ entity full_radio_v1_0_S00_AXI is
 		-- Users to add ports here
         m_axis_tdata : out std_logic_vector(31 downto 0);
         m_axis_tvalid : out std_logic;
+        
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -118,8 +119,43 @@ architecture arch_imp of full_radio_v1_0_S00_AXI is
 	signal reg_data_out	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal byte_index	: integer;
 	signal aw_en	: std_logic;
+	
+	-- NZDEB ADDITIONS
+	signal adc_dds_tdata  : std_logic_vector(15 downto 0);
+	signal adc_dds_tvalid : std_logic;
+	signal adc_dds_tdata_full : std_logic_vector(31 downto 0);
+	
+	signal tuner_dds_tdata  : std_logic_vector(31 downto 0);
+	signal tuner_dds_tvalid : std_logic;
+	
+	signal cmult_tdata  : std_logic_vector(47 downto 0);
+	signal cmult_tvalid : std_logic;
+	
+	signal filter1_tdata  : std_logic_vector(47 downto 0);
+	signal filter1_tvalid : std_logic;
+	signal filter1_tready : std_logic;
+	
+	signal filter2_tdata  : std_logic_vector(47 downto 0);
+	signal filter2_tvalid : std_logic;
+	signal filter2_tready : std_logic;
+	
+	signal real_part : std_logic_vector(15 downto 0);
+	signal imag_part : std_logic_vector(15 downto 0);
+	
+	signal dds_reset : std_logic;
 
-COMPONENT dds_compiler_0
+COMPONENT adc_dds
+  PORT (
+    aclk : IN STD_LOGIC;
+    aresetn : IN STD_LOGIC;
+    s_axis_phase_tvalid : IN STD_LOGIC;
+    s_axis_phase_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axis_data_tvalid : OUT STD_LOGIC;
+    m_axis_data_tdata : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+  );
+    END COMPONENT;
+    
+COMPONENT tuner_dds
   PORT (
     aclk : IN STD_LOGIC;
     aresetn : IN STD_LOGIC;
@@ -129,6 +165,40 @@ COMPONENT dds_compiler_0
     m_axis_data_tdata : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
   );
     END COMPONENT;
+    
+COMPONENT cmpy_0
+  PORT (
+    aclk : IN STD_LOGIC;
+    s_axis_a_tvalid : IN STD_LOGIC;
+    s_axis_a_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    s_axis_b_tvalid : IN STD_LOGIC;
+    s_axis_b_tdata : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+    m_axis_dout_tvalid : OUT STD_LOGIC;
+    m_axis_dout_tdata : OUT STD_LOGIC_VECTOR(47 DOWNTO 0) 
+  );
+END COMPONENT;
+
+COMPONENT filter1_fir_compiler
+  PORT (
+    aclk : IN STD_LOGIC;
+    s_axis_data_tvalid : IN STD_LOGIC;
+    s_axis_data_tready : OUT STD_LOGIC;
+    s_axis_data_tdata : IN STD_LOGIC_VECTOR(47 DOWNTO 0);
+    m_axis_data_tvalid : OUT STD_LOGIC;
+    m_axis_data_tdata : OUT STD_LOGIC_VECTOR(47 DOWNTO 0) 
+  );
+END COMPONENT;
+
+COMPONENT filter2_fir_compiler
+  PORT (
+    aclk : IN STD_LOGIC;
+    s_axis_data_tvalid : IN STD_LOGIC;
+    s_axis_data_tready : OUT STD_LOGIC;
+    s_axis_data_tdata : IN STD_LOGIC_VECTOR(47 DOWNTO 0);
+    m_axis_data_tvalid : OUT STD_LOGIC;
+    m_axis_data_tdata : OUT STD_LOGIC_VECTOR(47 DOWNTO 0) 
+  );
+END COMPONENT;
 
 begin
 	-- I/O Connections assignments
@@ -231,6 +301,9 @@ begin
 	      slv_reg2 <= (others => '0');
 	      slv_reg3 <= (others => '0');
 	    else
+	      -- Increment clock counter in reg3
+	      slv_reg3 <= std_logic_vector(unsigned(slv_reg3) + 1);
+	      
 	      loc_addr := axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	      if (slv_reg_wren = '1') then
 	        case loc_addr is
@@ -258,19 +331,21 @@ begin
 	                slv_reg2(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
 	              end if;
 	            end loop;
-	          when b"11" =>
-	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
-	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
-	                -- Respective byte enables are asserted as per write strobes                   
-	                -- slave registor 3
-	                slv_reg3(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
-	              end if;
-	            end loop;
+	          -- IGNORE WRITES TO REG 3 
+--	          when b"11" =>
+--	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
+--	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
+--	                -- Respective byte enables are asserted as per write strobes                   
+--	                -- slave registor 3
+--	                slv_reg3(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
+--	              end if;
+--	            end loop;
 	          when others =>
-	            slv_reg0 <= slv_reg0;
-	            slv_reg1 <= slv_reg1;
-	            slv_reg2 <= slv_reg2;
-	            slv_reg3 <= slv_reg3;
+	            null;
+--	            slv_reg0 <= slv_reg0;
+--	            slv_reg1 <= slv_reg1;
+--	            slv_reg2 <= slv_reg2;
+--	            slv_reg3 <= slv_reg3;
 	        end case;
 	      end if;
 	    end if;
@@ -367,7 +442,8 @@ begin
 	      when b"00" =>
 	        reg_data_out <= slv_reg0;
 	      when b"01" =>
-	        reg_data_out <= x"DEADBEEF";
+	        --reg_data_out <= x"DEADBEEF";
+	        reg_data_out <= slv_reg1;
 	      when b"10" =>
 	        reg_data_out <= slv_reg2;
 	      when b"11" =>
@@ -398,16 +474,87 @@ begin
 
 	-- Add user logic here
 
-your_instance_name : dds_compiler_0
+adc : adc_dds
   PORT MAP (
-    aclk => s_axi_aclk,
-    aresetn => '1',
+    aclk => S_AXI_ACLK,
+    aresetn => dds_reset,           -- Reg 2 LSb controls the active low reset
     s_axis_phase_tvalid => '1',
-    s_axis_phase_tdata => slv_reg0,
-    m_axis_data_tvalid => m_axis_tvalid,
-    m_axis_data_tdata => m_axis_tdata
+    s_axis_phase_tdata => slv_reg0, -- Reg 0 controls adc pinc
+    m_axis_data_tvalid => adc_dds_tvalid,
+    m_axis_data_tdata => adc_dds_tdata
+  );
+  
+ adc_dds_tdata_full <= X"0000" & adc_dds_tdata;
+  
+tuner : tuner_dds
+  PORT MAP (
+    aclk => S_AXI_ACLK,
+    aresetn => dds_reset,           -- Reg 2 LSb controls the active low reset
+    s_axis_phase_tvalid => '1',
+    s_axis_phase_tdata => slv_reg1, -- Reg 1 controls tuner pinc
+    m_axis_data_tvalid => tuner_dds_tvalid,
+    m_axis_data_tdata => tuner_dds_tdata
   );
 
+mixer : cmpy_0
+  PORT MAP (
+    aclk => S_AXI_ACLK,
+    s_axis_a_tvalid => adc_dds_tvalid,
+    s_axis_a_tdata => adc_dds_tdata_full,
+    s_axis_b_tvalid => tuner_dds_tvalid,
+    s_axis_b_tdata => tuner_dds_tdata,
+    m_axis_dout_tvalid => cmult_tvalid,
+    m_axis_dout_tdata => cmult_tdata
+  );
+
+filter1 : filter1_fir_compiler
+  PORT MAP (
+    aclk => S_AXI_ACLK,
+    s_axis_data_tvalid => cmult_tvalid,
+    s_axis_data_tready => filter1_tready,
+    s_axis_data_tdata => cmult_tdata,
+    m_axis_data_tvalid => filter1_tvalid,
+    m_axis_data_tdata => filter1_tdata
+  );
+
+filter2 : filter2_fir_compiler
+  PORT MAP (
+    aclk => S_AXI_ACLK,
+    s_axis_data_tvalid => filter1_tvalid,
+    s_axis_data_tready => filter2_tready,
+    s_axis_data_tdata => filter1_tdata,
+    m_axis_data_tvalid => filter2_tvalid,
+    m_axis_data_tdata => filter2_tdata
+  );
+  
+  -- Invert reset so reg2(0) initiates reset when 1 and resumes operation when 0
+  dds_reset <= '0' when slv_reg2(0) = '1' else '1';
+  
+  -- Clock counter
+  -- Output register or memory read data
+	process( S_AXI_ACLK ) is
+	begin
+	  if (rising_edge (S_AXI_ACLK)) then
+	    if ( S_AXI_ARESETN = '0' ) then
+	      axi_rdata  <= (others => '0');
+	    else
+	      if (slv_reg_rden = '1') then
+	        -- When there is a valid read address (S_AXI_ARVALID) with 
+	        -- acceptance of read address by the slave (axi_arready), 
+	        -- output the read dada 
+	        -- Read address mux
+	          axi_rdata <= reg_data_out;     -- register read data
+	      end if;   
+	    end if;
+	  end if;
+	end process;
+  
+  -- Construct final output
+  real_part <= (filter2_tdata(11 downto 0) & "0000");
+  imag_part <= (filter2_tdata(35 downto 24) & "0000");
+  
+  m_axis_tdata <= real_part & imag_part;
+  m_axis_tvalid <= filter2_tvalid;
 
 	-- User logic ends
 

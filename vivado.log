@@ -1,0 +1,117 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:34:34 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Wed Jul 30 20:02:56 2025
+# Process ID         : 291164
+# Current directory  : /home/nzdeb/Desktop/JHU/EN.525.742/Week_10/radio_periph_lab
+# Command line       : vivado
+# Log file           : /home/nzdeb/Desktop/JHU/EN.525.742/Week_10/radio_periph_lab/vivado.log
+# Journal file       : /home/nzdeb/Desktop/JHU/EN.525.742/Week_10/radio_periph_lab/vivado.jou
+# Running On         : ufuntu
+# Platform           : Ubuntu
+# Operating System   : Ubuntu 22.04.5 LTS
+# Processor Detail   : Intel(R) Core(TM) i5-8400 CPU @ 2.80GHz
+# CPU Frequency      : 3800.058 MHz
+# CPU Physical cores : 6
+# CPU Logical cores  : 6
+# Host memory        : 50359 MB
+# Swap memory        : 2147 MB
+# Total Virtual      : 52506 MB
+# Available Virtual  : 42001 MB
+#-----------------------------------------------------------
+start_gui
+open_project /home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.xpr
+INFO: [Project 1-313] Project file moved from '/home/nzdeb/.Xil/Vivado-622137-ufuntu/PrjAr/_X_' since last save.
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.ipdefs/lowlevel_dac_if'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/tools/Xilinx/Vivado/2024.2/data/ip'.
+INFO: [Project 1-5579] Found utility IPs instantiated in one or more block designs which have equivalent inline hdl with improved performance and reduced diskspace. It is recommended to migrate these utility IPs to inline hdl using the command upgrade_project -migrate_to_inline_hdl. The utility IPs may be deprecated in future releases. More information on inline hdl is available in UG994.
+open_project: Time (s): cpu = 00:00:12 ; elapsed = 00:00:07 . Memory (MB): peak = 7729.477 ; gain = 287.883 ; free physical = 16734 ; free virtual = 39243
+update_compile_order -fileset sources_1
+open_bd_design {/home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.srcs/sources_1/bd/proc_system/proc_system.bd}
+Reading block design file </home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.srcs/sources_1/bd/proc_system/proc_system.bd>...
+Adding component instance block -- xilinx.com:ip:processing_system7:5.5 - processing_system7_0
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - dips_and_leds
+Adding component instance block -- xilinx.com:ip:smartconnect:1.0 - axi_smc
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - rst_ps7_0_50M
+Adding component instance block -- xilinx.com:ip:axi_iic:2.1 - axi_iic_0
+Adding component instance block -- xilinx.com:ip:dds_compiler:6.0 - adc_dds_compiler
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - ADC_DDS_GPIO
+Adding component instance block -- xilinx.com:ip:xpm_cdc_gen:1.0 - xpm_cdc_gen_0
+Adding component instance block -- xilinx.com:ip:proc_sys_reset:5.0 - rst_ps7_0_125M
+Adding component instance block -- xilinx.com:ip:xpm_cdc_gen:1.0 - xpm_cdc_reset_pulse
+Adding component instance block -- xilinx.com:ip:fir_compiler:7.2 - filter_1_fir_compiler
+Adding component instance block -- xilinx.com:ip:fir_compiler:7.2 - filter_2_fir_compiler
+Adding component instance block -- xilinx.com:ip:dds_compiler:6.0 - tuner_dds_compiler
+Adding component instance block -- xilinx.com:ip:axi_gpio:2.0 - TUNER_DDS_GPIO
+Adding component instance block -- xilinx.com:ip:xpm_cdc_gen:1.0 - xpm_cdc_gen_1
+Adding component instance block -- xilinx.com:ip:cmpy:6.0 - cmpy_0
+Adding component instance block -- xilinx.com:ip:system_ila:1.1 - block_design_ILA
+Adding component instance block -- xilinx.com:ip:xlconcat:2.1 - xlconcat_0
+Adding component instance block -- xilinx.com:ip:xlconstant:1.1 - xlconstant_0
+Successfully read diagram <proc_system> from block design file </home/nzdeb/Desktop/JHU/EN.525.742/Week_8/lab8_zdeb/vivado/lab8_zdeb.srcs/sources_1/bd/proc_system/proc_system.bd>
+open_bd_design: Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 7970.941 ; gain = 0.000 ; free physical = 16642 ; free virtual = 39132
+set_property location {6.5 2426 446} [get_bd_cells block_design_ILA]
+set_property location {8.5 3456 -1} [get_bd_cells filter_1_fir_compiler]
+set_property location {9.5 4002 -43} [get_bd_cells filter_2_fir_compiler]
+set_property location {10 3997 23} [get_bd_cells filter_2_fir_compiler]
+set_property location {8.5 3266 -97} [get_bd_cells filter_1_fir_compiler]
+set_property location {9.5 3742 -84} [get_bd_cells filter_2_fir_compiler]
+set_property location {7 2375 -155} [get_bd_cells cmpy_0]
+set_property location {7.5 2915 -119} [get_bd_cells filter_1_fir_compiler]
+set_property location {8.5 3323 -123} [get_bd_cells filter_2_fir_compiler]
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+can't read "p_output_type": no such variable
+exit
+INFO: [Common 17-206] Exiting Vivado at Sat Aug  2 22:01:27 2025...
